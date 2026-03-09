@@ -127,8 +127,15 @@
         <h2 class="success-text">Build Generated Successfully</h2>
         <div class="download-section">
             {% if platform == 'windows' %}
+                {% if exe_exists %}
                 <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link">Download {{filename}}.exe</a>
+                {% endif %}
+                {% if msi_exists %}
                 <a href='/download?filename={{filename}}.msi&uuid={{uuid}}' class="download-link">Download {{filename}}.msi</a>
+                {% endif %}
+                {% if not exe_exists and not msi_exists %}
+                <p>Windows 安装包正在上传，请稍后刷新页面。</p>
+                {% endif %}
             {% elif platform == 'windows-x86' %}
                 <a href='/download?filename={{filename}}.exe&uuid={{uuid}}' class="download-link">Download {{filename}}.exe</a>
             {% elif platform == 'linux' %}
