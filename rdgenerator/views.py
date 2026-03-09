@@ -329,19 +329,26 @@ def check_for_file(request):
     uuid = request.GET['uuid']
     platform = request.GET['platform']
     gh_run = GithubRun.objects.filter(Q(uuid=uuid)).first()
-    status = gh_run.status
+    status = gh_run.status if gh_run else "未找到构建记录"
+    file_dir = Path('exe') / uuid
 
-    #if file_exists:
     if status == "Success":
-        return render(request, 'generated.html', {'filename': filename, 'uuid':uuid, 'platform':platform})
+        return render(request, 'generated.html', {
+            'filename': filename,
+            'uuid': uuid,
+            'platform': platform,
+            'exe_exists': (file_dir / f'{filename}.exe').exists(),
+            'msi_exists': (file_dir / f'{filename}.msi').exists(),
+        })
     else:
         return render(request, 'waiting.html', {'filename':filename, 'uuid':uuid, 'status':status, 'platform':platform})
 
 def download(request):
     filename = request.GET['filename']
     uuid = request.GET['uuid']
-    #filename = filename+".exe"
     file_path = os.path.join('exe',uuid,filename)
+    if not os.path.exists(file_path):
+        return HttpResponse('文件尚未上传完成，请稍后刷新页面后重试', status=404)
     with open(file_path, 'rb') as file:
         response = HttpResponse(file, headers={
             'Content-Type': 'application/vnd.microsoft.portable-executable',
