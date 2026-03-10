@@ -173,7 +173,11 @@ jobs:
                   'flutter/lib/common/hbbs/hbbs.dart',
               ])
           if 'device_login_limit' in modules:
-              copies.append('flutter/lib/common/widgets/login.dart')
+              copies.extend([
+                  'flutter/lib/common/widgets/login.dart',
+                  'src/common.rs',
+                  'src/ui_interface.rs',
+              ])
 
           seen = set()
           for rel in copies:
