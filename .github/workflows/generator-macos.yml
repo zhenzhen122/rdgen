@@ -89,12 +89,41 @@ jobs:
         with:
           zip_password: ${{ secrets.ZIP_PASSWORD }}
 
+      - name: Resolve callback endpoints
+        shell: bash
+        run: |
+          legacy_genurl='${{ secrets.GENURL }}'
+          genurl="${genurl:-}"
+          if [ -z "$genurl" ] && [ -n "$legacy_genurl" ]; then
+            genurl="$legacy_genurl"
+          fi
+          genurl="${genurl%/}"
+          api_server="${apiServer:-}"
+          api_server="${api_server%/}"
+          status_url=""
+          artifact_url=""
+          cleanup_url=""
+          if [ -n "$genurl" ]; then
+            status_url="${genurl}/updategh"
+            artifact_url="${genurl}/save_custom_client"
+            cleanup_url="${genurl}/cleanzip"
+          elif [ -n "$api_server" ]; then
+            status_url="${api_server}/api/updategh"
+            artifact_url="${api_server}/api/save_custom_client"
+            cleanup_url="${api_server}/api/cleanzip"
+          fi
+          {
+            echo "STATUS_URL=${status_url}"
+            echo "ARTIFACT_URL=${artifact_url}"
+            echo "CLEANUP_URL=${cleanup_url}"
+          } >> "$GITHUB_ENV"
+
       - name: Finalize and Cleanup zip/json
         if: always() # Run even if previous steps fail
         continue-on-error: true
         uses: fjogeleit/http-request-action@v1
         with:
-          url: "${{ secrets.GENURL }}/cleanzip"
+          url: "${{ env.CLEANUP_URL }}"
           method: 'POST'
           customHeaders: '{"Content-Type": "application/json"}'
           data: '{"uuid": "${{ env.uuid }}"}'
@@ -729,7 +758,7 @@ jobs:
             -H "Authorization: Bearer ${{ env.token }}" \
             -F "file=@$GITHUB_WORKSPACE/${{ env.filename }}-${{ matrix.job.arch }}.dmg" \
             -F "uuid=${{ env.uuid }}" \
-            "${{ secrets.GENURL }}/save_custom_client"
+            "${{ env.ARTIFACT_URL }}"
         
 
       - name: send file to api server
@@ -740,7 +769,7 @@ jobs:
             -H "Content-Type: multipart/form-data" \
             -H "Authorization: Bearer ${{ env.token }}" \
             -F "file=@$GITHUB_WORKSPACE/${{ env.filename }}-${{ matrix.job.arch }}.dmg" \
-            "${{ env.apiServer }}/api/save_custom_client"
+            "${{ env.ARTIFACT_URL }}"
 
       - name: Report Status
         uses: fjogeleit/http-request-action@v1
