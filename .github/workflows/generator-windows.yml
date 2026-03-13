@@ -185,17 +185,17 @@ jobs:
           overlay_root = Path('custom-overlay')
           project_root = Path('.')
 
-          copies = []
+          copies = [
+              'flutter/lib/models/user_model.dart',
+              'flutter/lib/common/widgets/login.dart',
+              'flutter/lib/common/hbbs/hbbs.dart',
+          ]
           if 'account_info_panel' in modules or 'first_install_password' in modules:
               copies.append('flutter/lib/desktop/pages/desktop_home_page.dart')
           if 'account_info_panel' in modules:
-              copies.extend([
-                  'flutter/lib/models/user_model.dart',
-                  'flutter/lib/common/hbbs/hbbs.dart',
-              ])
+              pass
           if 'device_login_limit' in modules:
               copies.extend([
-                  'flutter/lib/common/widgets/login.dart',
                   'src/common.rs',
                   'src/ui_interface.rs',
               ])
