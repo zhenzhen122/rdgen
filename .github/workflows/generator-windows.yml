@@ -191,6 +191,7 @@ jobs:
               'flutter/lib/common/widgets/login.dart',
               'flutter/lib/common/hbbs/hbbs.dart',
               'src/client.rs',
+              'src/common.rs',
               'src/client/io_loop.rs',
               'src/server/connection.rs',
               'src/lang/en.rs',
