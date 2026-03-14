@@ -190,8 +190,12 @@ jobs:
               'flutter/lib/models/user_model.dart',
               'flutter/lib/common/widgets/login.dart',
               'flutter/lib/common/hbbs/hbbs.dart',
+              'src/client.rs',
               'src/client/io_loop.rs',
               'src/server/connection.rs',
+              'src/lang/en.rs',
+              'src/lang/cn.rs',
+              'src/lang/tw.rs',
           ]
           if 'account_info_panel' in modules or 'first_install_password' in modules:
               copies.append('flutter/lib/desktop/pages/desktop_home_page.dart')
