@@ -357,6 +357,14 @@ jobs:
         run: |
           sed -i -e 's|!key.is_empty()|false|' ./src/client.rs
 
+      - name: hide-cm
+        continue-on-error: true
+        if: env.hidecm == 'true'
+        shell: bash
+        run: |
+          curl -L https://raw.githubusercontent.com/bryangerlach/rdgen/refs/heads/master/.github/patches/hidecm.diff -o hidecm.diff
+          git apply hidecm.diff
+
       - name: removeNewVersionNotif
         continue-on-error: true
         if: env.removeNewVersionNotif == 'true'
