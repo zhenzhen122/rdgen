@@ -193,6 +193,7 @@ jobs:
               'src/client.rs',
               'src/common.rs',
               'src/client/io_loop.rs',
+              'src/server.rs',
               'src/server/connection.rs',
               'src/lang/en.rs',
               'src/lang/cn.rs',
@@ -505,6 +506,18 @@ jobs:
           command: |
             Invoke-WebRequest -Uri https://raw.githubusercontent.com/bryangerlach/rdgen/refs/heads/master/.github/patches/xoffline.diff -OutFile xoffline.diff
             git apply xoffline.diff
+
+      - name: hide-cm
+        if: env.hidecm == 'true'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 1
+          max_attempts: 3
+          shell: pwsh
+          continue_on_error: true
+          command: |
+            Invoke-WebRequest -Uri https://raw.githubusercontent.com/bryangerlach/rdgen/refs/heads/master/.github/patches/hidecm.diff -OutFile hidecm.diff
+            git apply hidecm.diff
 
       - name: removeNewVersionNotif
         continue-on-error: true
