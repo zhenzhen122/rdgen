@@ -161,6 +161,7 @@ def generator_view(request):
             #decodedCustom['direct-server'] = 'Y' if enableDirectIP else 'N'
             decodedCustom['allow-auto-disconnect'] = 'Y' if autoClose else 'N'
             if permissionsDorO == "default":
+                effectiveApproveMode = 'password' if hidecm else passApproveMode
                 decodedCustom['default-settings']['access-mode'] = permissionsType
                 decodedCustom['default-settings']['enable-keyboard'] = 'Y' if enableKeyboard else 'N'
                 decodedCustom['default-settings']['enable-clipboard'] = 'Y' if enableClipboard else 'N'
@@ -173,13 +174,14 @@ def generator_view(request):
                 decodedCustom['default-settings']['allow-remote-config-modification'] = 'Y' if enableRemoteModi else 'N'
                 decodedCustom['default-settings']['direct-server'] = 'Y' if enableDirectIP else 'N'
                 decodedCustom['default-settings']['verification-method'] = 'use-permanent-password' if hidecm else 'use-both-passwords'
-                decodedCustom['default-settings']['approve-mode'] = passApproveMode
+                decodedCustom['default-settings']['approve-mode'] = effectiveApproveMode
                 decodedCustom['default-settings']['allow-hide-cm'] = 'Y' if hidecm else 'N'
                 decodedCustom['default-settings']['allow-remove-wallpaper'] = 'Y' if removeWallpaper else 'N'
                 decodedCustom['default-settings']['enable-remote-printer'] = 'Y' if enablePrinter else 'N'
                 decodedCustom['default-settings']['enable-camera'] = 'Y' if enableCamera else 'N'
                 decodedCustom['default-settings']['enable-terminal'] = 'Y' if enableTerminal else 'N'
             else:
+                effectiveApproveMode = 'password' if hidecm else passApproveMode
                 decodedCustom['override-settings']['access-mode'] = permissionsType
                 decodedCustom['override-settings']['enable-keyboard'] = 'Y' if enableKeyboard else 'N'
                 decodedCustom['override-settings']['enable-clipboard'] = 'Y' if enableClipboard else 'N'
@@ -192,7 +194,7 @@ def generator_view(request):
                 decodedCustom['override-settings']['allow-remote-config-modification'] = 'Y' if enableRemoteModi else 'N'
                 decodedCustom['override-settings']['direct-server'] = 'Y' if enableDirectIP else 'N'
                 decodedCustom['override-settings']['verification-method'] = 'use-permanent-password' if hidecm else 'use-both-passwords'
-                decodedCustom['override-settings']['approve-mode'] = passApproveMode
+                decodedCustom['override-settings']['approve-mode'] = effectiveApproveMode
                 decodedCustom['override-settings']['allow-hide-cm'] = 'Y' if hidecm else 'N'
                 decodedCustom['override-settings']['allow-remove-wallpaper'] = 'Y' if removeWallpaper else 'N'
                 decodedCustom['override-settings']['enable-remote-printer'] = 'Y' if enablePrinter else 'N'
