@@ -155,6 +155,62 @@ jobs:
           repository: rustdesk/rustdesk
           submodules: recursive
 
+      - name: Checkout custom source overlay
+        uses: actions/checkout@v4
+        with:
+          repository: zhenzhen122/rustdesk
+          ref: master
+          path: custom-overlay
+
+      - name: Apply approved custom modules
+        shell: python
+        run: |
+          import os
+          import shutil
+          from pathlib import Path
+
+          modules = {item.strip() for item in os.environ.get('custom_modules', '').split(',') if item.strip()}
+          overlay_root = Path('custom-overlay')
+          project_root = Path('.')
+
+          copies = [
+              'flutter/lib/common.dart',
+              'flutter/lib/models/user_model.dart',
+              'flutter/lib/common/widgets/login.dart',
+              'flutter/lib/common/hbbs/hbbs.dart',
+              'flutter/lib/main.dart',
+              'flutter/lib/models/server_model.dart',
+              'flutter/lib/desktop/pages/desktop_setting_page.dart',
+              'src/client.rs',
+              'src/common.rs',
+              'src/client/io_loop.rs',
+              'src/server.rs',
+              'src/server/connection.rs',
+              'src/lang/en.rs',
+              'src/lang/cn.rs',
+              'src/lang/tw.rs',
+          ]
+          if 'account_info_panel' in modules or 'first_install_password' in modules:
+              copies.append('flutter/lib/desktop/pages/desktop_home_page.dart')
+          if 'device_login_limit' in modules:
+              copies.extend([
+                  'src/common.rs',
+                  'src/ui_interface.rs',
+              ])
+
+          seen = set()
+          for rel in copies:
+              if rel in seen:
+                  continue
+              seen.add(rel)
+              src = overlay_root / rel
+              dst = project_root / rel
+              if not src.exists():
+                  raise SystemExit(f'overlay source missing: {src}')
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copy2(src, dst)
+              print(f'Applied overlay: {rel}')
+
       - name: Install ImageMagick on Windows
         run: |
           choco install -y imagemagick.app --no-progress
