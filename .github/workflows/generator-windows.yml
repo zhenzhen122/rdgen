@@ -196,8 +196,12 @@ jobs:
               'src/client.rs',
               'src/common.rs',
               'src/client/io_loop.rs',
+              'src/main.rs',
               'src/server.rs',
               'src/server/connection.rs',
+              'src/ui_interface.rs',
+              'src/ui_session_interface.rs',
+              'src/rendezvous_mediator.rs',
               'src/lang/en.rs',
               'src/lang/cn.rs',
               'src/lang/tw.rs',
@@ -209,7 +213,6 @@ jobs:
           if 'device_login_limit' in modules:
               copies.extend([
                   'src/common.rs',
-                  'src/ui_interface.rs',
               ])
 
           seen = set()
